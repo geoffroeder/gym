@@ -513,7 +513,6 @@ register(
     id='GymternetIntranet-v0',
     entry_point='gym.envs.networks:GymternetIntranet',
     max_episode_steps=200,
-    reward_threshold=75.0,
 )
 
 
