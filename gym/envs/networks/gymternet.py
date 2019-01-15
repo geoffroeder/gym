@@ -9,7 +9,7 @@ class GymternetIntranet(gym.Env):
     Environment representing a self-managed intranet
     """
 
-    def __init__(self, topology):
+    def __init__(self, topology, low=0, high=1e2):
         if self._is_wrong_type(topology) :
             raise ValueError("`topology` argument must be a list or tuple of lists or tuples")
 
@@ -20,6 +20,8 @@ class GymternetIntranet(gym.Env):
         self.network = nx.G(topology)
         self.n_edges = len(self.network.edges())
         self.n_nodes = len(self.network.nodes())
+        self.action_space = gym.Space.Box(low, high, shape=(self.n_edges,))
+        self.observation_space = gym.Space.Box(low, high, shape=(self.n_nodes, self.n_nodes))
 
     def _is_wrong_type(self, obj):
         """
@@ -43,7 +45,7 @@ class GymternetIntranet(gym.Env):
             done (boolean): whether the episode has ended, in which case further step() calls will return undefined results
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
         """
-        demand = self._get_random_observation()
+        demand = self._get_observation()
         reward = self._get_reward(demand, action)
         done = True
         return demand, reward, done, None
@@ -56,10 +58,9 @@ class GymternetIntranet(gym.Env):
         return 1.0
 
 
-    def _get_random_observation(self, scale_factor=1e3):
+    def _get_observation(self, scale_factor=1e3):
         """
-        TODO: replace with implementation from http://www.cs.huji.ac.il/~schapiram/Learning_to_Route%20(NIPS).pdf
         :return: Random uniform demand matrix of size self.n_nodes x self.n_nodes scaled by `scale_factor`
         """
-        return np.random.rand(self.n_nodes, self.n_nodes) * scale_factor
+        return self.observation_space.sample()
 
