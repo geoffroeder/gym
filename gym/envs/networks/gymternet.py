@@ -6,7 +6,7 @@ import collections
 
 class GymternetIntranet(gym.Env):
     """
-    Environment representing a privately managed intranet
+    Environment representing a self-managed intranet
     """
 
     def __init__(self, topology):
